@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
 
     val takeIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     val RESULT_CAMERA = 100
+
+    val BUNDLE_IMG = "TAPI_IMG"
+    val BUNDLE_NUM = "TAPI_NUM"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +67,8 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == RESULT_CAMERA) {
             data?.extras?.get("data").let {
                 if (it is Bitmap) {
+                    splash.visibility = View.GONE
+                    loading.visibility = View.VISIBLE
                     val matrix = Matrix()
                     matrix.postRotate(90F)
                     val rotatedBitmap =
@@ -93,7 +99,13 @@ class MainActivity : AppCompatActivity() {
                             5
                         )
                     }
-//                    Utils.bitmapToMat(rotatedBitmap, inputFrame)
+                    Utils.bitmapToMat(rotatedBitmap, inputFrame)
+                    val intent = Intent(application, ResultActivity::class.java)
+                    intent.putExtra(BUNDLE_NUM, circles.cols())
+                    intent.putExtra(BUNDLE_IMG, rotatedBitmap)
+                    Handler().postDelayed({
+                        startActivity(intent)
+                    }, 4000)
 //                    splash.setImageBitmap(rotatedBitmap)
                 }
             }
