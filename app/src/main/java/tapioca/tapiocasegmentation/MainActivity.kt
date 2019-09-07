@@ -17,7 +17,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.opencv.android.OpenCVLoader
+import org.opencv.android.Utils
 import org.opencv.imgproc.GeneralizedHough
+import org.opencv.imgproc.Imgproc
+import android.R.attr.y
+import android.R.attr.x
+import org.opencv.core.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +33,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        println(OpenCVLoader.OPENCV_VERSION)
 
         takeButton.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
@@ -57,12 +65,38 @@ class MainActivity : AppCompatActivity() {
 //                        bitmap
 //                    )
 //                }
-                val createScaledBitmap = Bitmap.createScaledBitmap(bitmap, 270, 480, true)
+//                val createScaledBitmap = Bitmap.createScaledBitmap(bitmap, 270, 480, true)
 //                480 * 270
-
-                GlobalScope.launch(Dispatchers.Main) {
-                    imageView.setImageBitmap(createScaledBitmap)
+                println("initDebug ${OpenCVLoader.initDebug()}")
+                val inputFrame = Mat()
+                Utils.bitmapToMat(bitmap, inputFrame)
+                inputFrame.reshape(2)
+//                val frame480 = Mat.zeros(480, 640, CvType.CV_8UC3)
+//                Imgproc.resize(inputFrame, frame480, Size(), 1.0, 1.0, Imgproc.INTER_NEAREST)
+                Imgproc.cvtColor(inputFrame, inputFrame, Imgproc.COLOR_RGB2GRAY)
+//                Imgproc.threshold(
+//                    frame480, frame480, 0.0, 255.0,
+//                    Imgproc.THRESH_BINARY or Imgproc.THRESH_OTSU
+//                )
+                val circles = Mat()
+                Imgproc.HoughCircles(inputFrame, circles, Imgproc.CV_HOUGH_GRADIENT,
+                    1.0, 100.0,24.0,40.0,40,110)
+                println(circles.cols())
+                val pt = Point()
+// 検出した直線上を緑線で塗る
+                Imgproc.cvtColor(inputFrame, inputFrame, Imgproc.COLOR_GRAY2BGR)
+                for (i in 0 until circles.cols()) {
+                    val data = circles.get(0, i)
+                    pt.x = data[0]
+                    pt.y = data[1]
+                    val rho = data[2]
+                    Imgproc.circle(inputFrame, pt, rho.toInt(), Scalar(0.0, 200.0, 0.0), 5)
                 }
+                Utils.matToBitmap(inputFrame, bitmap)
+                imageView.setImageBitmap(bitmap)
+//                GlobalScope.launch(Dispatchers.Main) {
+//                    imageView.setImageBitmap(createScaledBitmap)
+//                }
 
 //                val tapimap = HttpUtil.getTapiocaImage("https://us-central1-logical-waters-250102.cloudfunctions.net/tapicathon_python37", bitmap)
             }
