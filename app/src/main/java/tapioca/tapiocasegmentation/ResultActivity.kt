@@ -24,7 +24,10 @@ import android.R.attr.x
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_result.*
 import org.opencv.core.*
+import tapioca.tapiocasegmentation.MainActivity.Companion.BUNDLE_IMG
+import tapioca.tapiocasegmentation.MainActivity.Companion.BUNDLE_NUM
 
 class ResultActivity : AppCompatActivity() {
 
@@ -35,7 +38,10 @@ class ResultActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
 
-        val imageView = findViewById<ImageView>(R.id.tapioca_img)
+        val tapiocaNum = intent.getIntExtra(BUNDLE_NUM, 0)
+        val bitmap = intent.getParcelableExtra<Bitmap>(BUNDLE_IMG)
+
+        tapioca_img.setImageBitmap(bitmap)
         val quantityView = findViewById<TextView>(R.id.tapioca_quantity)
         val caloryView = findViewById<TextView>(R.id.calory)
         val againButton = findViewById<Button>(R.id.again_button)
@@ -43,7 +49,7 @@ class ResultActivity : AppCompatActivity() {
         // TODO imageViewに受け取った画像をセット
         val quantity = 30
         val calory = 100
-        quantityView.text = quantity.toString() + "個"
+        quantityView.text = tapiocaNum.toString() + "個"
         caloryView.text = calory.toString() + "cal"
 
 

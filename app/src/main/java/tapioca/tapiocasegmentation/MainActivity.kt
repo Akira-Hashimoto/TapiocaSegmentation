@@ -3,6 +3,7 @@ package tapioca.tapiocasegmentation
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.os.Bundle
 import android.os.Handler
@@ -25,9 +26,10 @@ class MainActivity : AppCompatActivity() {
 
     val takeIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     val RESULT_CAMERA = 100
-
-    val BUNDLE_IMG = "TAPI_IMG"
-    val BUNDLE_NUM = "TAPI_NUM"
+    companion object {
+        val BUNDLE_IMG = "TAPI_IMG"
+        val BUNDLE_NUM = "TAPI_NUM"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
