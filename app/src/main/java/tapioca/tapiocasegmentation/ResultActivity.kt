@@ -18,7 +18,7 @@ class ResultActivity : AppCompatActivity() {
 
         tapioca_img.setImageBitmap(bitmap)
         tapioca_quantity.text = tapiocaNum.toString() + "個"
-        calory.text = calory.toString() + "cal"
+        calory.text = (2.6 * tapiocaNum + 37 * 5).toString() + "kcal"
 
 
     }
