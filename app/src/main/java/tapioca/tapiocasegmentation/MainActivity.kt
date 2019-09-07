@@ -16,6 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.opencv.android.OpenCVLoader
+import org.opencv.imgproc.GeneralizedHough
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         takeButton.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
                     this,
@@ -47,16 +50,18 @@ class MainActivity : AppCompatActivity() {
         httpButton.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
                 val bitmap = (imageView.drawable as BitmapDrawable).bitmap
-                var tapimap: Bitmap? = null
-                withContext(Dispatchers.IO) {
-                    tapimap = HttpUtil.getTapiocaImage(
-                        "https://us-central1-tapiocachallenge.cloudfunctions.net/getTapioca",
-                        bitmap
-                    )
-                }
+//                var tapimap: Bitmap? = null
+//                withContext(Dispatchers.IO) {
+//                    tapimap = HttpUtil.getTapiocaImage(
+//                        "https://us-central1-tapiocachallenge.cloudfunctions.net/getTapioca",
+//                        bitmap
+//                    )
+//                }
+                val createScaledBitmap = Bitmap.createScaledBitmap(bitmap, 270, 480, true)
+//                480 * 270
 
                 GlobalScope.launch(Dispatchers.Main) {
-                    imageView.setImageBitmap(tapimap)
+                    imageView.setImageBitmap(createScaledBitmap)
                 }
 
 //                val tapimap = HttpUtil.getTapiocaImage("https://us-central1-logical-waters-250102.cloudfunctions.net/tapicathon_python37", bitmap)
