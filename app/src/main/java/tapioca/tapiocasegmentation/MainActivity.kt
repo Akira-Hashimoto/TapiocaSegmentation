@@ -3,7 +3,6 @@ package tapioca.tapiocasegmentation
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.os.Bundle
 import android.os.Handler
@@ -26,6 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     val takeIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     val RESULT_CAMERA = 100
+
     companion object {
         val BUNDLE_IMG = "TAPI_IMG"
         val BUNDLE_NUM = "TAPI_NUM"
@@ -105,10 +105,7 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(application, ResultActivity::class.java)
                     intent.putExtra(BUNDLE_NUM, circles.cols())
                     intent.putExtra(BUNDLE_IMG, rotatedBitmap)
-                    Handler().postDelayed({
-                        startActivity(intent)
-                    }, 4000)
-//                    splash.setImageBitmap(rotatedBitmap)
+                    startActivity(intent)
                 }
             }
         }
