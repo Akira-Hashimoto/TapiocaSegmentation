@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     Utils.matToBitmap(inputFrame, rotatedBitmap)
                     val intent = Intent(application, ResultActivity::class.java)
-                    intent.putExtra(BUNDLE_NUM, circles.cols() - 1)
+                    intent.putExtra(BUNDLE_NUM, circles.cols())
                     intent.putExtra(BUNDLE_IMG, rotatedBitmap)
                     startActivity(intent)
                 }
