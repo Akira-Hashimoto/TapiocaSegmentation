@@ -7,12 +7,10 @@ import android.graphics.Matrix
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
-import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_main.*
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.Mat
@@ -69,15 +67,12 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == RESULT_CAMERA) {
             data?.extras?.get("data").let {
                 if (it is Bitmap) {
-                    splash.visibility = View.GONE
-                    loading.visibility = View.VISIBLE
                     val matrix = Matrix()
                     matrix.postRotate(90F)
                     val rotatedBitmap =
                         Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, true)
                     val inputFrame = Mat()
                     Utils.bitmapToMat(rotatedBitmap, inputFrame)
-                    inputFrame.reshape(2)
                     Imgproc.cvtColor(inputFrame, inputFrame, Imgproc.COLOR_RGB2GRAY)
                     val circles = Mat()
                     Imgproc.HoughCircles(
@@ -86,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                     )
                     println(circles.cols())
                     val pt = Point()
-// 検出した直線上を緑線で塗る
+
                     Imgproc.cvtColor(inputFrame, inputFrame, Imgproc.COLOR_GRAY2BGR)
                     for (i in 0 until circles.cols()) {
                         val data = circles.get(0, i)
@@ -101,9 +96,9 @@ class MainActivity : AppCompatActivity() {
                             5
                         )
                     }
-                    Utils.bitmapToMat(rotatedBitmap, inputFrame)
+                    Utils.matToBitmap(inputFrame, rotatedBitmap)
                     val intent = Intent(application, ResultActivity::class.java)
-                    intent.putExtra(BUNDLE_NUM, circles.cols())
+                    intent.putExtra(BUNDLE_NUM, circles.cols() - 1)
                     intent.putExtra(BUNDLE_IMG, rotatedBitmap)
                     startActivity(intent)
                 }
